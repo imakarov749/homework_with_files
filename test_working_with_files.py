@@ -11,7 +11,7 @@ file_dir = os.listdir(resources_dir)
 
 pdf = os.path.join(resources_dir, 'sample.pdf')
 xlsx = os.path.join(resources_dir, 'test_file.xlsx')
-csv = os.path.join(resources_dir, 'test_file.csv')
+csv_path = os.path.join(resources_dir, 'test_file.csv')
 zip = os.path.join(script_dir, 'test_file.zip')
 
 
@@ -49,13 +49,13 @@ def test_working_with_xlsx_file():
 
 
 def test_create_and_check_csv_file():
-    if os.path.exists(csv):
-        os.remove(csv)
-        with open(csv, 'w') as csv_file:
+    if os.path.exists(csv_path):
+        os.remove(csv_path)
+        with open(csv_path, 'w') as csv_file:
             csv_file.write('test_create_csv')
         print('Файл csv удален и создан заново')
     else:
-        with open(csv, 'w') as csv_file:
+        with open(csv_path, 'w') as csv_file:
             csv_file.write('test_create_csv')
             print('Файл csv создан c записью')
 
@@ -95,16 +95,12 @@ def test_check_files_from_zip():
             assert check_xlsx == 'test_create_xlsx'
             print('Файл xlsx подходит для теста')
 
-        # я не знаю, что делать здесь, он выдает ошибку
-        # AttributeError: 'str' object has no attribute 'reader'
-        # в интернетах пишут, что надо переустанавливать питон
-
-        # with zip_open.open('resources/test_file.csv') as csv_open:
-        #    csv_table = csv.reader((codecs.iterdecode(csv_open, 'utf-8')))
-        #    for row in csv_table:
-        #        if row == 1:
-        #            assert row[1] == 'test_create_csv'
-        # print('Файл csv подходит для теста')
+        with zip_open.open('resources/test_file.csv') as csv_opened:
+            csv_table = csv.reader((codecs.iterdecode(csv_opened, 'utf-8')))
+            for row in csv_table:
+                if row == 1:
+                    assert row[1] == 'test_create_csv'
+                print('Файл csv подходит для теста')
 
         with zip_open.open('resources/sample.pdf') as pdf_open:
             pdf_open = PdfReader('resources/sample.pdf')
